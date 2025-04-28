@@ -92,8 +92,22 @@ def calculate_metrics(answer, correct_answer):
         except Exception as e:
             # st.warning(f"関連性スコア計算エラー: {e}")
             relevance_score = 0.0 # エラー時は0
+        try:
+            coverage_score = calcualate_coverage_score(answer, correct_answer)
+        except Exception as e:
+            # st.warning(f"Coverageスコア計算エラー: {e}")
+            coverage_score = 0.0
 
     return bleu_score, similarity_score, word_count, relevance_score
+
+def calcualate_coverage_score(answer, correct_answer):
+    tokenizer = Tokenizer()
+    correct_tokens = [token.surface for token in tokenizer.tokenize(correct_answer) if token.part_of_speech.startswith('名詞', '動詞', '形容詞')]
+    answer_tokens = [token.surface for token in tokenizer.tokenize(answer) if token.part_of_speech.startswith('名詞', '動詞', '形容詞')]
+    if not correct_tokens or not answer_tokens:
+        return 0.0
+    common = set(correct_tokens).intersection(set(answer_tokens))
+    return len(common) / len(correct_tokens)
 
 def get_metrics_descriptions():
     """評価指標の説明を返す"""
@@ -104,5 +118,6 @@ def get_metrics_descriptions():
         "類似度スコア (similarity_score)": "TF-IDFベクトルのコサイン類似度による、正解と回答の意味的な類似性 (0〜1の値)",
         "単語数 (word_count)": "回答に含まれる単語の数。情報量や詳細さの指標",
         "関連性スコア (relevance_score)": "正解と回答の共通単語の割合。トピックの関連性を表す (0〜1の値)",
+        "カバレッジスコア (coverage_score)": "正解文の中の重要単語（名詞・動詞・形容詞）が、回答でどれだけカバーされたか (0〜1の値)",
         "効率性スコア (efficiency_score)": "正確性を応答時間で割った値。高速で正確な回答ほど高スコア"
     }
