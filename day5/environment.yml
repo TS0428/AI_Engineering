@@ -1,0 +1,15 @@
+name: kedro-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11 
+  - pandas
+  - scikit-learn
+  - pytest
+  - black
+  - pip
+  - pip:
+      - kedro
+      - mlflow
+      - great_expectations
