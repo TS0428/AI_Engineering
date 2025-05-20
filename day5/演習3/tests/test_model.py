@@ -133,7 +133,7 @@ def test_model_f1_score(train_model):
     assert f1 >= 0.75, f"モデルのF1スコアが低すぎます: {f1}"
 
 
-def test_model_inference_time():
+def test_model_inference_time(train_model):
     """モデルの推論時間を検証"""
     model, X_test, _ = train_model
 
